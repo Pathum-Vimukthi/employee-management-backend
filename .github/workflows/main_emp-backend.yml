@@ -36,23 +36,13 @@ jobs:
   deploy:
     runs-on: windows-latest
     needs: build
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
-
+    
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: java-app
       
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_48F0DF35D16B4C73AD12DC5BF69563DD }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_EB8769978775426E9FBC0C1D66610814 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7A2285210E1E4555A24F1549E2B40402 }}
-
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -60,4 +50,4 @@ jobs:
           app-name: 'emp-backend'
           slot-name: 'Production'
           package: '*.jar'
-          
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_215CCE0E85CD4FB4B1857CEA151B1C7D }}
